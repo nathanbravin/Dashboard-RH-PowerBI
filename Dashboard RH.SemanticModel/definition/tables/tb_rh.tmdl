@@ -1,0 +1,177 @@
+table tb_rh
+	lineageTag: f52dc9cc-8b8d-44f5-a1b0-82031528b470
+
+	measure 'Total de Salario' = SUM(tb_rh[SALARIO])
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: 37829360-fe4b-4186-9c2a-30991ea8040f
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure 'Total de Faltas' = ```
+			SUM(tb_rh[QTDE FALTA]) 
+			```
+		formatString: 0
+		lineageTag: fb2c82ca-b5e9-4d25-b290-4a9579abb538
+
+	measure 'Media de idade por genero' = ```
+			AVERAGE(tb_rh[IDADE]) 
+			```
+		lineageTag: 71833e5e-5fca-4223-a915-8f4229366330
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'QTD Genero' = COUNT(tb_rh[NOME])
+		formatString: 0
+		lineageTag: ae1bded1-e9f2-400c-be78-1f9b6ecfbe2d
+
+	column ID
+		dataType: int64
+		formatString: 0
+		lineageTag: 6b450a6c-2267-4b72-b316-803a82d834fc
+		summarizeBy: count
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column NOME
+		dataType: string
+		lineageTag: 1864428a-0d2f-41cf-9ae6-9399896ecc94
+		summarizeBy: none
+		sourceColumn: NOME
+
+		annotation SummarizationSetBy = Automatic
+
+	column IDADE
+		dataType: int64
+		formatString: 0
+		lineageTag: a0d0639d-fcf9-409d-8374-0e0934d21776
+		summarizeBy: sum
+		sourceColumn: IDADE
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'DATA ADIMISSAO'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 187befae-1ef8-4346-93b2-8687f9431d48
+		summarizeBy: none
+		sourceColumn: DATA ADIMISSAO
+
+		variation Variation
+			isDefault
+			relationship: 5785bbfe-0457-43a0-848e-1efb0cad1635
+			defaultHierarchy: LocalDateTable_c72f0892-c0d1-433f-9c10-171c77b0fe22.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DEPARTAMENTO
+		dataType: string
+		lineageTag: 556c2111-600a-4ff4-b9c5-fc8914843ad0
+		summarizeBy: none
+		sourceColumn: DEPARTAMENTO
+
+		annotation SummarizationSetBy = Automatic
+
+	column SALARIO
+		dataType: int64
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: 88b3f5df-dcc7-4c84-9ca1-e96125661d03
+		summarizeBy: sum
+		sourceColumn: SALARIO
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	column 'QTDE FALTA'
+		dataType: int64
+		formatString: 0
+		lineageTag: 67fe8296-0646-4a0f-8a93-47fe0312ce47
+		summarizeBy: sum
+		sourceColumn: QTDE FALTA
+
+		annotation SummarizationSetBy = Automatic
+
+	column FILIAL
+		dataType: string
+		lineageTag: 49b46d8a-09bb-4455-8f4b-108cda744657
+		summarizeBy: none
+		sourceColumn: FILIAL
+
+		annotation SummarizationSetBy = Automatic
+
+	column DEMISSOES
+		dataType: string
+		lineageTag: 27309e63-4c27-4c65-9d5b-11907c0cd6b0
+		summarizeBy: none
+		sourceColumn: DEMISSOES
+
+		annotation SummarizationSetBy = Automatic
+
+	column SEXO
+		dataType: string
+		lineageTag: 65327187-fd8b-4ff5-8dc0-c7c637b0181b
+		summarizeBy: none
+		sourceColumn: SEXO
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CONTRATACÕES FEITAS'
+		dataType: int64
+		formatString: 0
+		lineageTag: f8238543-c1d9-486f-a99b-a84177327767
+		summarizeBy: sum
+		sourceColumn: CONTRATACÕES FEITAS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano = YEAR(tb_rh[DATA ADIMISSAO])
+		formatString: 0
+		lineageTag: b12df49a-6900-4454-8d4b-eaad6a8387fa
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Funcionario' = IF(tb_rh[SALARIO] >= 5000, "Funcionário Caro", "Funcionário Comum" )
+		lineageTag: 829fae40-608a-44d2-896f-8f408285c849
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Estados =
+			IF(tb_rh[FILIAL] = "RJ", "Rio de Janeiro"
+			         ,IF(tb_rh[FILIAL] = "SP", "São Paulo"
+			         ,IF(tb_rh[FILIAL] = "MG", "Minas Gerais" )))
+		lineageTag: b7c1c6fc-8a83-41ac-b4e2-6892a2faa3ca
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Funcionario 1' =
+			IF(tb_rh[SALARIO] >= 5000 &&
+			                tb_rh[DEPARTAMENTO] = "GERENCIA", "Funcionário Caro", "Funcionário Comum")
+		lineageTag: 1c2179a9-83f8-4877-958a-ce72d0e692f2
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dia da Semana' = UPPER(FORMAT(tb_rh[DATA ADIMISSAO], "ddd/mmm/yyyy"))
+		lineageTag: 1a0eb601-7a37-41e4-b795-33108fa18741
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition tb_rh = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\Nathan\Documents\Curso BI\Novo_Material_2025\Materiais_Power_BI_Analytics\1_MODULO - POWER_BI - Starter\1_RH\SALARIOS.xlsx"), null, true),
+				    tb_rh_Table = Fonte{[Item="tb_rh",Kind="Table"]}[Data],
+				    #"Tipo Alterado" = Table.TransformColumnTypes(tb_rh_Table,{{"ID", Int64.Type}, {"NOME", type text}, {"IDADE", Int64.Type}, {"DATA ADIMISSAO", type date}, {"DEPARTAMENTO", type text}, {"SALARIO", Int64.Type}, {"QTDE FALTA", Int64.Type}, {"FILIAL", type text}, {"DEMISSOES", type text}, {"SEXO", type text}, {"CONTRATACÕES FEITAS", Int64.Type}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
